@@ -55,5 +55,45 @@ class TestCardapio(unittest.TestCase):
         self.assertNotIn("Mousse", texto)
 
 
+class TestCardapioPdf(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        db.set_db_path(Path(self.tmp.name) / "teste.db")
+        pantry.ingest_xlsx(str(XLSX_REAL))
+        pantry.cadastrar_complemento("creme de leite", 200, "g", 8.00)
+        basket.definir_prato("Strogonoff de Frango", 4, [
+            ("peito de frango", 600, "g"),
+            ("creme de leite", 100, "g"),
+        ])
+        for dim in ("utensilios", "tecnicas", "restricoes_operacionais"):
+            state.record_checklist_item("Strogonoff de Frango", dim, "ok", "confirmado")
+        state.accept_dish("Strogonoff de Frango")
+        basket.registrar_preco_escolhido("Strogonoff de Frango", 15.00)
+
+    def tearDown(self):
+        db.reset_db_path()
+        self.tmp.cleanup()
+
+    def test_pdf_valido(self):
+        saida = Path(self.tmp.name) / "cardapio.pdf"
+        caminho = menu.gerar_pdf(str(saida))
+        dados = Path(caminho).read_bytes()
+        self.assertTrue(dados.startswith(b"%PDF"))
+        self.assertIn(b"%%EOF", dados[-2048:])
+        self.assertGreater(len(dados), 2000)
+
+    def test_pdf_sem_jargao_cmv(self):
+        # o PDF é o artefato entregue à Dona Maria: nada de "CMV" impresso
+        from pypdf import PdfReader
+        saida = Path(self.tmp.name) / "cardapio.pdf"
+        menu.gerar_pdf(str(saida))
+        texto = "".join(pag.extract_text() for pag in PdfReader(str(saida)).pages)
+        self.assertNotIn("CMV", texto)
+        # em linguagem simples: custo por marmita e preço escolhido presentes
+        self.assertIn("custo por marmita", texto)
+        self.assertIn("Strogonoff de Frango", texto)
+        self.assertIn("15,00", texto)
+
+
 if __name__ == "__main__":
     unittest.main()

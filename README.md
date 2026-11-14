@@ -53,9 +53,9 @@ hermes config set model.provider nous
 hermes whatsapp         # exibe QR code; escanear com o WhatsApp do número secundário
 hermes gateway start
 
-# 3. Criar o ambiente virtual do projeto (dependência: openpyxl)
+# 3. Criar o ambiente virtual do projeto (deps: openpyxl, reportlab; pypdf p/ testes)
 python3 -m venv .venv
-.venv/bin/pip install openpyxl
+.venv/bin/pip install openpyxl reportlab pypdf
 
 # 4. Rodar os testes do núcleo determinístico
 .venv/bin/python -m unittest discover -s tests -v

@@ -51,6 +51,10 @@ display:
     whatsapp:
       tool_progress: false          # false normaliza para "off"
       interim_assistant_messages: false
+      # Sem estes, turns longos (busca de receitas) mandam bolhas do tipo
+      # "⏳ Working — 2min — iteration 23/150" para a Dona Maria.
+      long_running_notifications: false
+      busy_ack_detail: false
 
 # Núcleo determinístico: as tools de agent_tools/ são Python puro e NUNCA
 # delegam aritmética ao LLM (ver ADR 0001 e ADR 0003).
