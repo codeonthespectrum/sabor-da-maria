@@ -21,12 +21,36 @@ delegation:
   provider: nous
   model: openai/gpt-5.6-luna
 
+# Diretório de trabalho das sessões de mensageria (gateway/cron). SEM isto,
+# as sessões do WhatsApp não herdam o workspace e o AGENTS.md deste repo
+# (persona + regras) não é injetado no prompt — o agente responde genérico.
+# Aplicado via: hermes config set terminal.cwd /Users/kimgomes/Desktop/agent-challenge
+terminal:
+  cwd: /Users/kimgomes/Desktop/agent-challenge
+
 # Canal: WhatsApp via bridge Baileys (`hermes whatsapp` para parear por
 # QR code). Usar número SECUNDÁRIO — bridges não-oficiais podem ser
 # banidas no número principal. Fallback: WhatsApp Cloud API ou Telegram.
 platforms:
   whatsapp:
     enabled: true
+    # Home channel: para onde vão resultados de cron e avisos do gateway.
+    # SEM isto, a primeira mensagem de cada sessão nova dispara o aviso
+    # "📬 No home channel is set for whatsapp..." para a Dona Maria.
+    home_channel:
+      platform: whatsapp
+      chat_id: 168100943147203@lid
+      name: Dona Maria
+
+# Higiene do chat: a Dona Maria não é técnica — ela nunca deve ver bolhas
+# de progresso ("terminal cd /Users/...") nem narração de meio de turno.
+# Sem tool_progress: off, cada chamada de tool vira uma mensagem separada
+# no WhatsApp (o adaptador não edita bolhas como o Telegram).
+display:
+  platforms:
+    whatsapp:
+      tool_progress: false          # false normaliza para "off"
+      interim_assistant_messages: false
 
 # Núcleo determinístico: as tools de agent_tools/ são Python puro e NUNCA
 # delegam aritmética ao LLM (ver ADR 0001 e ADR 0003).

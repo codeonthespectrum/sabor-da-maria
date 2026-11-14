@@ -53,8 +53,12 @@ hermes config set model.provider nous
 hermes whatsapp         # exibe QR code; escanear com o WhatsApp do número secundário
 hermes gateway start
 
-# 3. Rodar os testes do núcleo determinístico
-python -m unittest discover -s tests -v
+# 3. Criar o ambiente virtual do projeto (dependência: openpyxl)
+python3 -m venv .venv
+.venv/bin/pip install openpyxl
+
+# 4. Rodar os testes do núcleo determinístico
+.venv/bin/python -m unittest discover -s tests -v
 ```
 
 O `AGENTS.md` deste repositório é o context file da consultora (persona,
