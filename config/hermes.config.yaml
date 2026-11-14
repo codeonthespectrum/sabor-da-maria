@@ -1,0 +1,22 @@
+# Configuração do Hermes para o Sabor da Maria (ADR 0003).
+# Referência: trecho do ~/.hermes/config.yaml após `hermes setup`.
+# Chaves de API ficam em variáveis de ambiente, nunca aqui.
+
+# Modelo que dirige a conversa com a Dona Maria.
+model: anthropic/claude-sonnet-4-6
+provider: anthropic
+
+# Subagentes executam tarefas delimitadas (extração de HTML, normalização
+# de unidades fora da tabela) com modelo barato e rápido.
+subagents:
+  provider: openai
+  model: openai/gpt-5.6-luna
+
+# Canal: WhatsApp via bridge (número secundário! risco de banimento no
+# número pessoal). Fallback: WhatsApp Cloud API (oficial) ou Telegram.
+platforms:
+  whatsapp:
+    enabled: true
+
+# Núcleo determinístico: as tools de agent_tools/ são Python puro e NUNCA
+# delegam aritmética ao LLM (ver ADR 0001 e ADR 0003).
