@@ -8,6 +8,7 @@ total reservado e orçamento restante.
 from pathlib import Path
 
 from . import basket, pricing
+from .conversions import nome_bonito
 from .db import get_conn
 
 
@@ -28,7 +29,7 @@ def gerar_cardapio(path_saida: str = "cardapio_lancamento.md") -> str:
     linhas = ["# Sabor da Maria — Cardápio de Lançamento", ""]
     for p in pratos:
         cmv = pricing.cmv_por_porcao(p["nome_exibicao"])
-        linhas += [f"## {p['nome_exibicao']}", ""]
+        linhas += [f"## {nome_bonito(p['nome_exibicao'])}", ""]
         linhas.append("| Ingrediente | Quantidade | Custo parcial | Origem |")
         linhas.append("|---|---|---|---|")
         for item in cmv["itens"]:
@@ -120,7 +121,7 @@ def gerar_pdf(path_saida: str = "cardapio_lancamento.pdf") -> str:
 
     for p in pratos:
         cmv = pricing.cmv_por_porcao(p["nome_exibicao"])
-        story.append(Paragraph(p["nome_exibicao"], h2))
+        story.append(Paragraph(nome_bonito(p["nome_exibicao"]), h2))
         story.append(Spacer(1, 2 * mm))
 
         tab = Table([["Ingrediente", "Quantidade", "Custo parcial", "Origem"]]

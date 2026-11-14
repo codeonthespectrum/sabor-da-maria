@@ -15,7 +15,7 @@ Semântica decidida na sessão de design:
 
 import math
 
-from .conversions import normalizar, para_unidade_base
+from .conversions import nome_bonito, normalizar, para_unidade_base
 from .db import get_conn
 
 ORCAMENTO_INICIAL = 80.00
@@ -43,8 +43,9 @@ def definir_prato(nome: str, rendimento_porcoes: int,
         conn.execute(
             "INSERT INTO pratos (nome, nome_exibicao, rendimento_porcoes)"
             " VALUES (?, ?, ?)"
-            " ON CONFLICT(nome) DO UPDATE SET rendimento_porcoes = excluded.rendimento_porcoes",
-            (chave, nome.strip(), int(rendimento_porcoes)),
+            " ON CONFLICT(nome) DO UPDATE SET rendimento_porcoes = excluded.rendimento_porcoes,"
+            " nome_exibicao = excluded.nome_exibicao",
+            (chave, nome_bonito(nome), int(rendimento_porcoes)),
         )
         conn.execute("DELETE FROM prato_ingredientes WHERE prato = ?", (chave,))
         for ing, qtd, unidade in ingredientes:

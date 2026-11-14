@@ -94,6 +94,22 @@ class TestCardapioPdf(unittest.TestCase):
         self.assertIn("Strogonoff de Frango", texto)
         self.assertIn("15,00", texto)
 
+    def test_pdf_embeleza_nome_com_sublinhados(self):
+        # o modelo às vezes registra a chave técnica: o PDF mostra o nome bonito
+        from pypdf import PdfReader
+        basket.definir_prato("escondidinho_de_batata", 4, [
+            ("creme de leite", 100, "g"),
+        ])
+        for dim in ("utensilios", "tecnicas", "restricoes_operacionais"):
+            state.record_checklist_item("escondidinho_de_batata", dim, "ok", "confirmado")
+        state.accept_dish("escondidinho_de_batata")
+        basket.registrar_preco_escolhido("escondidinho_de_batata", 12.00)
+        saida = Path(self.tmp.name) / "cardapio.pdf"
+        menu.gerar_pdf(str(saida))
+        texto = "".join(pag.extract_text() for pag in PdfReader(str(saida)).pages)
+        self.assertIn("Escondidinho de Batata", texto)
+        self.assertNotIn("escondidinho_de_batata", texto)
+
 
 if __name__ == "__main__":
     unittest.main()

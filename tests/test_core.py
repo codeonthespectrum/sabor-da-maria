@@ -47,6 +47,18 @@ class TestConversoes(unittest.TestCase):
         self.assertEqual(conversions.decompor_embalagem("g"), ("kg", 0.001))
         self.assertEqual(conversions.decompor_embalagem("ml"), ("L", 0.001))
 
+    def test_nome_bonito(self):
+        self.assertEqual(
+            conversions.nome_bonito("escondidinho_de_batata"),
+            "Escondidinho de Batata")
+        self.assertEqual(
+            conversions.nome_bonito("carne_de_panela_com_batata"),
+            "Carne de Panela com Batata")
+        # nome já bonito passa quase intacto
+        self.assertEqual(
+            conversions.nome_bonito("Espaguete à Bolonhesa"),
+            "Espaguete à Bolonhesa")
+
 
 class TestPantry(BaseDB):
     def test_ingestao_planilha_real(self):

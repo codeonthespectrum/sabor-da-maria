@@ -56,11 +56,38 @@ _EMBALAGEM_RE = re.compile(r"(\d+(?:[.,]\d+)?)\s*(kg|g|ml|l)\b", re.IGNORECASE)
 
 
 def normalizar(texto: str) -> str:
-    """Minúsculo, sem acento, espaços colapsados. Usado para nomes de
-    ingredientes e unidades em todo o sistema."""
+    """Minúsculo, sem acento, sublinhados viram espaços, espaços
+    colapsados. Usado para nomes de ingredientes e unidades em todo o
+    sistema — assim a chave técnica ("escondidinho_de_batata") e o nome
+    bonito ("Escondidinho de Batata") caem na mesma chave."""
     texto = unicodedata.normalize("NFKD", texto.strip().lower())
     texto = "".join(c for c in texto if not unicodedata.combining(c))
+    texto = texto.replace("_", " ")
     return re.sub(r"\s+", " ", texto)
+
+
+# Conectivos que ficam minúsculos em nomes de prato.
+_CONECTIVOS = {
+    "a", "à", "às", "ao", "aos", "com", "da", "das", "de", "do", "dos",
+    "e", "em", "na", "nas", "no", "nos", "por",
+}
+
+
+def nome_bonito(nome: str) -> str:
+    """Nome de prato legível para a Dona Maria.
+
+    O modelo às vezes passa a chave técnica ("escondidinho_de_batata");
+    aqui viramos "Escondidinho de Batata". Nomes já bonitos passam
+    praticamente intactos (só acerto de capitalização)."""
+    texto = re.sub(r"[_\-]+", " ", nome.strip())
+    texto = re.sub(r"\s+", " ", texto)
+    palavras = []
+    for i, palavra in enumerate(texto.split(" ")):
+        if i > 0 and palavra.lower() in _CONECTIVOS:
+            palavras.append(palavra.lower())
+        else:
+            palavras.append(palavra[:1].upper() + palavra[1:])
+    return " ".join(palavras)
 
 
 def para_unidade_base(quantidade: float, unidade: str) -> tuple[float, str] | None:
