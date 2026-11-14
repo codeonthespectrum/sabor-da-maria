@@ -111,5 +111,19 @@ com `set_phase()`:
    WhatsApp** com `MEDIA:<caminho absoluto do pdf>` na resposta. O Markdown
    (`gerar_cardapio`) é artefato interno de conferência, não se envia.
 
+## Delegação ao subagente (Luna) — retorno ≤ 5s
+
 Se `extrair_receita` levantar `SemJsonLd`, delegue a extração ao subagente
-(modelo Luna) e valide o resultado antes de registrar o prato.
+(modelo Luna) seguindo EXATAMENTE este padrão — é o que mantém o retorno
+da delegação abaixo de 5 segundos:
+
+1. Rode `extrair_texto_bruto(url)` (a URL vem em `SemJsonLd.url`) para pegar
+   só o texto visível da página.
+2. Chame `delegate_task` com UM filho, o texto bruto INLINE em `context`,
+   instrução explícita de **não usar tools** ("você já tem todo o texto")
+   e `output_schema` exigindo o JSON dos ingredientes.
+3. Valide o JSON retornado antes de registrar o prato.
+
+O filho deve responder em 1 turno, sem chamar ferramentas. Se o resultado
+não validar, corrija uma vez; persistindo o erro, descarte a receita e
+registre o motivo.

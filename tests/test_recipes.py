@@ -56,6 +56,31 @@ class TestParseJsonLd(unittest.TestCase):
         with self.assertRaises(recipes.SemJsonLd):
             recipes.extrair_receita_de_html(HTML_SEM_JSONLD)
 
+    def test_texto_bruto_remove_tags_e_scripts(self):
+        html = (
+            "<html><head><style>body{color:red}</style>"
+            "<script>var x=1;</script></head>"
+            "<body><h1>Bolo de Fubá</h1><p>2 xícaras de fubá</p>"
+            "<nav>menu do site</nav><!-- comentário --></body></html>"
+        )
+        from unittest.mock import patch
+        with patch.object(recipes, "_get", return_value=html):
+            texto = recipes.extrair_texto_bruto("http://exemplo.com/r")
+        self.assertIn("Bolo de Fubá", texto)
+        self.assertIn("2 xícaras de fubá", texto)
+        self.assertNotIn("color:red", texto)
+        self.assertNotIn("var x", texto)
+        self.assertNotIn("menu do site", texto)
+        self.assertNotIn("comentário", texto)
+        self.assertNotIn("<", texto)
+
+    def test_sem_jsonld_carrega_url_pro_fallback(self):
+        from unittest.mock import patch
+        with patch.object(recipes, "_get", return_value=HTML_SEM_JSONLD):
+            with self.assertRaises(recipes.SemJsonLd) as ctx:
+                recipes.extrair_receita("http://exemplo.com/receita-x")
+        self.assertEqual(ctx.exception.url, "http://exemplo.com/receita-x")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -25,6 +25,25 @@ _HEADERS = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"}
 class SemJsonLd(RuntimeError):
     """A página não tem schema.org/Recipe utilizável — fallback para o Luna."""
 
+    def __init__(self, mensagem: str, url: str = ""):
+        super().__init__(mensagem)
+        self.url = url
+
+
+def extrair_texto_bruto(url: str, max_chars: int = 12000) -> str:
+    """Busca a página e devolve só o texto visível, sem tags nem scripts.
+
+    É o insumo do nível 3 da cascata: o agente passa este texto INLINE no
+    contexto do subagente (Luna), que responde em 1 turno sem tools — é o
+    que mantém o retorno da delegação abaixo de 5s (ver AGENTS.md)."""
+    html = _get(url)
+    html = re.sub(r"(?is)<(script|style|noscript|svg|header|footer|nav|form)[^>]*>.*?</\1>", " ", html)
+    html = re.sub(r"(?s)<!--.*?-->", " ", html)
+    texto = re.sub(r"(?s)<[^>]+>", "\n", html)
+    texto = re.sub(r"[ \t]+", " ", texto)
+    texto = re.sub(r"\n\s*\n+", "\n", texto)
+    return texto.strip()[:max_chars]
+
 
 def _get(url: str) -> str:
     req = urllib.request.Request(url, headers=_HEADERS)
@@ -134,5 +153,8 @@ def extrair_receita_de_html(html: str) -> dict:
 
 def extrair_receita(url: str) -> dict:
     """Busca a página e extrai. SemJsonLd propaga para o agente acionar
-    o Luna (nível 3 da cascata)."""
-    return extrair_receita_de_html(_get(url))
+    o Luna (nível 3 da cascata), com a URL anexada à exceção."""
+    try:
+        return extrair_receita_de_html(_get(url))
+    except SemJsonLd as exc:
+        raise SemJsonLd(str(exc), url=url) from exc
