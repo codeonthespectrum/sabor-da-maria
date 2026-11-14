@@ -42,12 +42,15 @@ passa por modelo de linguagem. Ver ADR 0003.
 ## Setup
 
 ```bash
-# 1. Instalar o Hermes Agent
+# 1. Instalar o Hermes Agent e autenticar no Nous Portal (OAuth, sem API keys)
 curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
-hermes setup          # provider Anthropic (conversa) — ver config/hermes.config.yaml
+hermes setup --portal   # login via navegador; requer assinatura/créditos
+                        # em https://portal.nousresearch.com/billing
+hermes config set model.default anthropic/claude-sonnet-4.6
+hermes config set model.provider nous
 
-# 2. Subir o gateway no WhatsApp (use um número secundário — ver ADR e README)
-hermes gateway setup  # habilitar WhatsApp, parear via QR code
+# 2. Parear o WhatsApp (use um NÚMERO SECUNDÁRIO — bridge não-oficial)
+hermes whatsapp         # exibe QR code; escanear com o WhatsApp do número secundário
 hermes gateway start
 
 # 3. Rodar os testes do núcleo determinístico
