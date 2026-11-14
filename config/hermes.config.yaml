@@ -13,10 +13,13 @@ model:
   provider: nous
 
 # Subagentes executam tarefas delimitadas (extração de HTML, normalização
-# de unidades fora da tabela) com modelo barato e rápido — configurar em
-# Hermes Desktop → Settings → Model → Subagents:
-#   provider: nous
-#   model: openai/gpt-5.6-luna
+# de unidades fora da tabela) com modelo barato e rápido — já aplicado via:
+#   hermes config set delegation.provider nous
+#   hermes config set delegation.model openai/gpt-5.6-luna
+# (Validado com delegate_task real: extração de ingredientes em JSON.)
+delegation:
+  provider: nous
+  model: openai/gpt-5.6-luna
 
 # Canal: WhatsApp via bridge Baileys (`hermes whatsapp` para parear por
 # QR code). Usar número SECUNDÁRIO — bridges não-oficiais podem ser
