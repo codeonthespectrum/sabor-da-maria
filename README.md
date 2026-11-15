@@ -22,15 +22,19 @@ O glossário do domínio (linguagem compartilhada, sem implementação) está em
 ├── CONTEXT.md                  # Glossário do domínio
 ├── docs/adr/                   # Architecture Decision Records
 ├── despensa_dona_maria.xlsx    # Dados de entrada (abas Despensa e Precos)
-├── agent_tools/                # Tools customizadas registradas no Hermes
+├── agent_tools/                # Núcleo determinístico (regras de negócio)
 │   ├── state.py                # Fases do fluxo + checklist de viabilidade (SQLite)
 │   ├── pantry.py               # Ingestão do xlsx, consulta de estoque, preço unitário
 │   ├── recipes.py              # Cascata de scraping: busca → JSON-LD → LLM
 │   ├── conversions.py          # Tabela de conversão de unidades (colher, xícara...)
 │   ├── basket.py               # Cesta de compras deduplicada + reserva de orçamento
 │   ├── pricing.py              # CMV por porção + cenários de preço (determinístico)
-│   └── menu.py                 # Geração do cardápio de lançamento (Markdown)
+│   └── menu.py                 # Geração do cardápio de lançamento (Markdown + PDF)
+├── hermes-plugin/sabor-da-maria/  # Plugin Hermes: expõe o núcleo como 18 tools
+│                                 # nativas sabor_* (o agente não escreve Python)
 ├── config/                     # Configuração do Hermes (modelos, subagentes, WhatsApp)
+│   └── locales/                # Overlay que silencia mensagens de bastidor
+├── ROTEIRO_DEMO.md             # Roteiro de gravação do fluxo ponta a ponta
 └── tests/                      # Testes das regras de negócio (cesta, CMV, gate)
 ```
 
@@ -57,7 +61,18 @@ hermes gateway start
 python3 -m venv .venv
 .venv/bin/pip install openpyxl reportlab pypdf
 
-# 4. Rodar os testes do núcleo determinístico
+# 4. Instalar o plugin de tools nativas (18 tools sabor_*)
+ln -sfn "$PWD/hermes-plugin/sabor-da-maria" ~/.hermes/plugins/sabor-da-maria
+hermes plugins enable sabor-da-maria
+hermes config set platform_toolsets.whatsapp '["hermes-whatsapp", "sabor"]'
+
+# 5. Silêncio de bastidor: overlay de locales + flag de notificações
+cp config/locales/*.yaml ~/.hermes/locales/   # criar o diretório se preciso
+hermes config set platforms.whatsapp.gateway_restart_notification false
+# + HERMES_GATEWAY_BUSY_ACK_ENABLED=false no EnvironmentVariables do plist
+#   (~/Library/LaunchAgents/ai.hermes.gateway.plist) — ver config/hermes.config.yaml
+
+# 6. Rodar os testes do núcleo determinístico
 .venv/bin/python -m unittest discover -s tests -v
 ```
 
