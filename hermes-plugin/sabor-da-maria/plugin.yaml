@@ -1,0 +1,23 @@
+name: sabor-da-maria
+version: 1.0.0
+description: Tools nativas do Sabor da Maria — fase, despensa, receitas, checklist, CMV, preços e cardápio (núcleo determinístico de agent_tools/)
+author: agent-challenge
+provides_tools:
+  - sabor_get_phase
+  - sabor_set_phase
+  - sabor_get_pantry
+  - sabor_tem_na_despensa
+  - sabor_cadastrar_complemento
+  - sabor_buscar_receitas
+  - sabor_extrair_receita
+  - sabor_extrair_texto_bruto
+  - sabor_definir_prato
+  - sabor_record_checklist_item
+  - sabor_checklist_completo
+  - sabor_accept_dish
+  - sabor_cmv_por_porcao
+  - sabor_cenarios_de_preco
+  - sabor_registrar_preco_escolhido
+  - sabor_cesta_atual
+  - sabor_gerar_cardapio
+  - sabor_gerar_pdf

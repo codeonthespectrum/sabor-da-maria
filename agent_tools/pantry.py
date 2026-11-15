@@ -9,8 +9,6 @@ Unidades compostas ("balde 2kg", "un 500ml") são normalizadas para a
 unidade base (kg, L, un) na ingestão — ver conversions.py.
 """
 
-import openpyxl
-
 from .conversions import decompor_embalagem, normalizar, para_unidade_base
 from .db import get_conn
 
@@ -20,6 +18,10 @@ class ErroDeUnidade(ValueError):
 
 
 def _ler_aba(path: str, nome_aba: str) -> list[tuple]:
+    # openpyxl é importado aqui (e não no topo) para o plugin Hermes carregar
+    # sem a dependência — o gateway só lê a despensa, quem ingere xlsx é o
+    # setup local com a venv do projeto.
+    import openpyxl
     wb = openpyxl.load_workbook(path, read_only=True)
     if nome_aba not in wb.sheetnames:
         raise ValueError(f"Aba '{nome_aba}' não encontrada. Abas: {wb.sheetnames}")
