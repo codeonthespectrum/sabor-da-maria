@@ -11,3 +11,6 @@ gateway:
     no_home_channel: ""
   busy:
     ack: ""
+  shutdown:
+    notice_shutdown: ""
+    notice_restart: ""
