@@ -1,0 +1,13 @@
+# Sabor da Maria — silencia avisos de bastidor no WhatsApp.
+# Overlay do usuário: tem precedência sobre o catálogo embutido (merge por chave).
+gateway:
+  startup:
+    online: ""
+    restarted: ""
+  session:
+    auto_reset_notice: ""
+    auto_reset_context_exhausted: ""
+  notify:
+    no_home_channel: ""
+  busy:
+    ack: ""

@@ -52,6 +52,12 @@ platforms:
       platform: whatsapp
       chat_id: 168100943147203@lid
       name: Dona Maria
+    # Silencia TODA mensagem de ciclo de vida do gateway no chat:
+    # "♻️ Gateway online", "gateway restarted", aviso de shutdown e o
+    # notice de restart planejado. Sem isto, cada `hermes gateway restart`
+    # manda 2 bolhas técnicas para a Dona Maria. Validado no log:
+    # "Shutdown/startup notification suppressed ... gateway_restart_notification=false"
+    gateway_restart_notification: false
 
 # Higiene do chat: a Dona Maria não é técnica — ela nunca deve ver bolhas
 # de progresso ("terminal cd /Users/...") nem narração de meio de turno.
@@ -66,6 +72,25 @@ display:
       # "⏳ Working — 2min — iteration 23/150" para a Dona Maria.
       long_running_notifications: false
       busy_ack_detail: false
+
+# Silêncio de bastidor — duas camadas FORA do config.yaml:
+#
+# 1) Overlay de locales (config/locales/*.yaml → copiar para
+#    ~/.hermes/locales/): esvazia os textos que o gateway mandaria
+#    espontaneamente e que NÃO têm chave de config:
+#      - gateway.session.auto_reset_notice ("◐ Sessão reiniciada...")
+#      - gateway.session.auto_reset_context_exhausted (anexada à resposta)
+#      - gateway.startup.online/restarted (cinto-e-fivelas do flag acima)
+#      - gateway.notify.no_home_channel (idem)
+#      - gateway.busy.ack (idem do item 2)
+#    O overlay faz merge por chave sobre o catálogo embutido; texto vazio
+#    = t() devolve "" e nada é entregue.
+#
+# 2) HERMES_GATEWAY_BUSY_ACK_ENABLED=false no EnvironmentVariables do
+#    plist (~/Library/LaunchAgents/ai.hermes.gateway.plist): desliga de
+#    vez o aviso de "ocupado" quando ela manda mensagem com um turn
+#    rodando — com nossos turns de 10s+, isso dispararia direto.
+#    busy_ack_detail: false (acima) só tirava o detalhe, não o aviso.
 
 # Núcleo determinístico: as tools de agent_tools/ são Python puro e NUNCA
 # delegam aritmética ao LLM (ver ADR 0001 e ADR 0003).
