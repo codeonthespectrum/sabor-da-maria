@@ -94,3 +94,10 @@ display:
 
 # Núcleo determinístico: as tools de agent_tools/ são Python puro e NUNCA
 # delegam aritmética ao LLM (ver ADR 0001 e ADR 0003).
+
+# Background review: rotina do Hermes que relê a conversa para "melhorar a
+# biblioteca de skills". Não entrega nada no chat (confirmado), mas queimava
+# 24–50K tokens de cache por rajada no meio da conversa da Dona Maria.
+auxiliary:
+  background_review:
+    enabled: false
