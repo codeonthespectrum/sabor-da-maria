@@ -45,8 +45,12 @@ retomar dias depois de onde parou:
 Se uma página de receita não tem dados estruturados (JSON-LD), uma cascata de
 scraping delega a extração ao subagente. Se um prato não fecha (falta
 equipamento, estoura o orçamento), o agente propõe substituição antes de
-descartar. Roteiro de demonstração ponta a ponta em
-[`ROTEIRO_DEMO.md`](ROTEIRO_DEMO.md).
+descartar.
+
+**Veja funcionando:** [`docs/demo/DEMO.md`](docs/demo/DEMO.md) — transcrição
+integral de uma sessão real, do `oi` ao PDF, com o mapa dos bastidores; o
+cardápio gerado está em [`docs/demo/cardapio_lancamento.pdf`](docs/demo/cardapio_lancamento.pdf).
+Para reproduzir ao vivo, siga o [`ROTEIRO_DEMO.md`](ROTEIRO_DEMO.md).
 
 ## Arquitetura
 
@@ -152,6 +156,7 @@ CMV e cenários de preço, e os artefatos finais (Markdown e PDF sem jargão).
 
 | Documento | Conteúdo |
 |---|---|
+| [`docs/demo/DEMO.md`](docs/demo/DEMO.md) | Transcrição de sessão real + PDF do cardápio gerado |
 | [`CONTEXT.md`](CONTEXT.md) | Glossário do domínio (CMV, cesta, porção, gate...) |
 | [`AGENTS.md`](AGENTS.md) | Persona e regras invioláveis da consultora |
 | [`ROTEIRO_DEMO.md`](ROTEIRO_DEMO.md) | Roteiro de demonstração + reset entre rodadas |
