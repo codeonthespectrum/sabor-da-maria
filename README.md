@@ -47,9 +47,11 @@ scraping delega a extração ao subagente. Se um prato não fecha (falta
 equipamento, estoura o orçamento), o agente propõe substituição antes de
 descartar.
 
-**Veja funcionando:** [`docs/demo/DEMO.md`](docs/demo/DEMO.md) — transcrição
-integral de uma sessão real, do `oi` ao PDF, com o mapa dos bastidores; o
-cardápio gerado está em [`docs/demo/cardapio_lancamento.pdf`](docs/demo/cardapio_lancamento.pdf).
+**Veja funcionando:** [`docs/demo/demo.mp4`](docs/demo/demo.mp4) — vídeo de
+~1min45 da sessão real, do `oi` ao PDF (a conversa aconteceu de verdade no
+WhatsApp; o vídeo é uma renderização fiel da transcrição, que está integral em
+[`docs/demo/DEMO.md`](docs/demo/DEMO.md) com o mapa dos bastidores). O cardápio
+gerado está em [`docs/demo/cardapio_lancamento.pdf`](docs/demo/cardapio_lancamento.pdf).
 Para reproduzir ao vivo, siga o [`ROTEIRO_DEMO.md`](ROTEIRO_DEMO.md).
 
 ## Arquitetura

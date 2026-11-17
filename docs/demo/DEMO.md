@@ -1,5 +1,10 @@
 # Demo — conversa real no WhatsApp
 
+**Vídeo:** [`demo.mp4`](demo.mp4) (~1min45) — a sessão renderizada em formato
+de chat. A conversa aconteceu de verdade no WhatsApp; o vídeo é uma
+renderização fiel gerada a partir desta transcrição
+(`scripts/gerar_demo_video.py`).
+
 Transcrição **integral e não editada** de uma sessão real (15/11/2026), do
 `oi` ao cardápio em PDF. Só aparecem as mensagens trocadas no chat; as 45
 chamadas de tools que aconteceram nos bastidores estão resumidas fase a fase
