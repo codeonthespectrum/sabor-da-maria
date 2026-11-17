@@ -54,6 +54,22 @@ WhatsApp; o vídeo é uma renderização fiel da transcrição, que está integr
 gerado está em [`docs/demo/cardapio_lancamento.pdf`](docs/demo/cardapio_lancamento.pdf).
 Para reproduzir ao vivo, siga o [`ROTEIRO_DEMO.md`](ROTEIRO_DEMO.md).
 
+## Testando ao vivo (qualquer número)
+
+O bot está com **acesso aberto**: qualquer número de WhatsApp pode mandar
+mensagem e conversar com a consultora — sem pareamento nem aprovação prévia.
+
+Duas observações de escopo, por decisão de design:
+
+- **Uma cliente por vez.** O desafio pede a jornada de *uma* cozinheira (a
+  Dona Maria), então a consultoria é única e compartilhada: fase, pratos e
+  preços vivem numa única linha de estado. Isolamento por número seria
+  multi-tenancy — fora do que foi pedido.
+- **Reset entre testadores.** Depois que alguém conclui (ou abandona) uma
+  consultoria, rode `bash scripts/reset_demo.sh` para zerar fase, pratos e
+  preços — a despensa de 37 itens permanece. A pessoa seguinte manda `oi` e
+  começa do zero.
+
 ## Arquitetura
 
 ```
